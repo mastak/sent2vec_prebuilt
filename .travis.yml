@@ -1,13 +1,6 @@
-language: python
+language: cpp
 dist: xenial
 sudo: true
-
-
-python:
-- '2.7'
-- '3.5'
-- '3.6'
-- '3.7'
 
 
 os:
