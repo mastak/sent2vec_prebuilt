@@ -14,4 +14,4 @@ sent2vec/fasttext: sent2vec
 
 
 wheel: sent2vec/fasttext
-	pip3 wheel --wheel-dir=./wheels .
+	pip wheel --wheel-dir=./wheels .
