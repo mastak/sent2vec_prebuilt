@@ -16,8 +16,8 @@ env:
   matrix:
     - PYTHON_VERSION=2.7
     - PYTHON_VERSION=3.5
-    - PYTHON_VERSION=3.6
-    - PYTHON_VERSION=3.7
+#    - PYTHON_VERSION=3.6
+#    - PYTHON_VERSION=3.7
 
 
 matrix:
@@ -26,14 +26,14 @@ matrix:
       env: PYTHON_VERSION=2.7
       osx_image: xcode9.2
     - os: osx
-      env: PYTHON_VERSION=3.6
-      osx_image: xcode9.2
-    - os: osx
       env: PYTHON_VERSION=3.5
       osx_image: xcode9.2
-    - os: osx
-      env: PYTHON_VERSION=3.7
-      osx_image: xcode9.2
+#    - os: osx
+#      env: PYTHON_VERSION=3.6
+#      osx_image: xcode9.2
+#    - os: osx
+#      env: PYTHON_VERSION=3.7
+#      osx_image: xcode9.2
 
 
 before_install:
@@ -43,6 +43,10 @@ before_install:
   - pyenv latest local $PYTHON_VERSION
   - export PYTHON_CFLAGS="$(python-config --includes)"
   - pip install --upgrade pip
+
+
+install:
+  - pip install requirements.txt
 
 
 script:
