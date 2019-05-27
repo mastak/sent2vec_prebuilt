@@ -1,14 +1,61 @@
 language: python
 dist: xenial
+sudo: true
+
+
 python:
+- '2.7'
+- '3.5'
 - '3.6'
-#- '2.7'
-#- '3.7'
+- '3.7'
+
+
 os:
 - linux
 - osx
+
+
+env:
+  global:
+    - HOMEBREW_NO_INSTALL_CLEANUP=1
+    # NOTE: Hack, c.f. https://github.com/travis-ci/travis-ci/issues/8613
+    - LD_LIBRARY_PATH="/usr/local/clang/lib"
+  matrix:
+    - PYTHON_VERSION=2.7
+    - PYTHON_VERSION=3.5
+    - PYTHON_VERSION=3.6
+    - PYTHON_VERSION=3.7
+
+
+matrix:
+  include:
+    - os: osx
+      env: PYTHON_VERSION=2.7
+      osx_image: xcode9.2
+    - os: osx
+      env: PYTHON_VERSION=3.6
+      osx_image: xcode9.2
+    - os: osx
+      env: PYTHON_VERSION=3.5
+      osx_image: xcode9.2
+    - os: osx
+      env: PYTHON_VERSION=3.7
+      osx_image: xcode9.2
+
+
+before_install:
+  - git clone https://github.com/momo-lab/xxenv-latest.git "$(pyenv root)"/plugins/xxenv-latest
+  - pyenv latest install $PYTHON_VERSION -f
+  - pyenv latest global $PYTHON_VERSION
+  - pyenv latest local $PYTHON_VERSION
+  - export PYTHON_CFLAGS="$(python-config --includes)"
+  - pip install --upgrade pip
+
+
 script:
 - make wheel
+
+
 deploy:
   provider: pypi
   user: mastak
@@ -17,5 +64,5 @@ deploy:
   distributions: bdist_wheel
   skip_cleanup: true
   skip_existing: true
-#  on:
-#    branch: master
+  on:
+    branch: master
