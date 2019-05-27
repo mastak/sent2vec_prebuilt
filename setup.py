@@ -46,6 +46,10 @@ source_files = [
 
 compile_opts = ['-std=c++0x', '-Wno-cpp', '-pthread', '-Wno-sign-compare']
 
+libraries = ['rt']
+if sys.platform == 'darwin':
+    libraries = []
+
 
 ext = [
     Extension(
@@ -54,6 +58,7 @@ ext = [
         extra_compile_args=compile_opts,
         language='c++',
         include_dirs=[numpy.get_include()],
+        libraries=libraries,
     )
 ]
 
@@ -61,7 +66,7 @@ ext = [
 setup(
     name='sent2vec_prebuilt',
     ext_modules=cythonize(ext, language_level=str(sys.version_info[0])),
-    version='0.0.1',
+    version='0.0.2',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/epfml/sent2vec',
