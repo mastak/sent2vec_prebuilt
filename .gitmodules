@@ -1,3 +1,3 @@
 [submodule "sent2vec"]
 	path = sent2vec
-	url = https://github.com/epfml/sent2vec
+	url = https://github.com/mastak/sent2vec.git

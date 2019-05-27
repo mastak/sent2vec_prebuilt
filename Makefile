@@ -4,9 +4,7 @@
 
 
 sent2vec:
-	git submodules init
-	git submodules pull
-
+	git submodule update --init --recursive
 
 sent2vec/fasttext: sent2vec
 	$(MAKE) -C sent2vec clean
@@ -14,4 +12,4 @@ sent2vec/fasttext: sent2vec
 
 
 wheel: sent2vec/fasttext
-	pip wheel --wheel-dir=./wheels .
+	python setup.py bdist_wheel

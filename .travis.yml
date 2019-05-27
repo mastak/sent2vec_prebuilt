@@ -1,63 +1,33 @@
-language: cpp
-dist: xenial
-sudo: true
-
+language: python
 
 os:
-- linux
-- osx
+  - linux
+#  - osx
 
-
-env:
-  global:
-    - HOMEBREW_NO_INSTALL_CLEANUP=1
-    # NOTE: Hack, c.f. https://github.com/travis-ci/travis-ci/issues/8613
-    - LD_LIBRARY_PATH="/usr/local/clang/lib"
-  matrix:
-    - PYTHON_VERSION=2.7
-    - PYTHON_VERSION=3.5
-    - PYTHON_VERSION=3.6
-    - PYTHON_VERSION=3.7
-
-
-matrix:
-  include:
-    - os: osx
-      env: PYTHON_VERSION=2.7
-      osx_image: xcode9.2
-    - os: osx
-      env: PYTHON_VERSION=3.5
-      osx_image: xcode9.2
-    - os: osx
-      env: PYTHON_VERSION=3.6
-      osx_image: xcode9.2
-    - os: osx
-      env: PYTHON_VERSION=3.7
-      osx_image: xcode9.2
-
-
-before_install:
-  - git clone https://github.com/momo-lab/xxenv-latest.git "$(pyenv root)"/plugins/xxenv-latest
-  - pyenv latest install $PYTHON_VERSION -f
-  - pyenv latest global $PYTHON_VERSION
-  - pyenv latest local $PYTHON_VERSION
-  - export PYTHON_CFLAGS="$(python-config --includes)"
-  - pip install --upgrade pip
-
+python:
+  - '2.7'
+  - '3.5'
+  - '3.6'
 
 install:
   - pip install -r requirements.txt
 
-
 script:
-- make wheel
-
+  - |
+    cat <<EOF > setup.cfg
+    [bdist_wheel]
+    universal = false
+    plat-name=$(python -c "from wheel.pep425tags import get_platform; print(get_platform().replace('linux', 'manylinux1'))")
+    EOF
+  - cat setup.cfg
+  - make wheel
 
 deploy:
   provider: pypi
   user: mastak
-  password:
-    secure: YxxXCyPAxVkv7IZd1MvH5Dc+XpshmCFKiklM/xJ5sbblvTpvlIn0PV6W+Nvbf6O9zzePQ/MS9qzaBOtUe7ZOjkyB1PT/Td22KopjY9et1l28upyNEwEGqfRWpB/GK5pVcNHH5Opv6ert3utNQsU7I3WUhUUFzYQF5MGQTvtprODub81PI43aSnk9QtIyFb/8O9vOB31LmbEMeBcZXOkBti7yN45q7PBE7dwSIs4R+RMp07rJtukiUfj9cqk6K+LOrpmXbbQ34VlZLfSoioI0/0nF5x0RINI2QSgELSjHkh2Y1MgYzXA1EAe0YFtCSRjSbcDX1lTuWi0FnXf/fW5iERZuxCJsoXurkocWXkNPrv+VnVab2oNeLXWLt79vlMw+ihbZGdIAzwfBTQDMhvzcTSHXuCEfSl1oecw1KnG8MH6qD7CQ/Vzn9X9/X18bD2oacPalF9QKAV8H4JMiwprEadUZ5RhSawhUFE+g9mnntRWaAFJbjIZRkLoJVO03LP57RRGuBntybZrJeRt0B+9MEeS89toA3mw24BciJ125VfQX1TflLI6y7zk/erKxArjq/x3ncL60UNLHXEyIcFeo1pIqc85e+d1EBGhSaVKJylj0LMuqpJ2iFJA8ygfFACFfZ/34lMHx0ZDTSuyakLIyZuFhvOHq01Kar8Z/SeWD+2c=
+  password: $PYPI_PASSWORD
+#  password:
+#    secure: HMfD4NXKXouM8JE69urN4ZLNiF5y2ieVXzedECvAbdmR4cSuyJnVljBEEq5ykn3xNexauigvY/gtestRKhG4BRzIaLOE5Ihz0eRqky0HO1c90zDVxcCrsjGOW1oX2X5odDgpZ+plWyTHUW1G5lIyK8fF9WLBUsvYQ6r9EPCjSH9y3R4ddDuddXZQuRuN/HxNyPhJWAJYeeVT25Cngbkvht+3UGPq4Dy9owZ/tilcptBRpOeS3HL4phPwtOuiz8ezmJjmHMjVKG9JeWK31i89uPqvmRGskU6Or+zh3y9Qwnw60Fa+ahDk2xgV94T9FAmbIuWm2CiIdpRSPpaW9FsvbyTk9DXr04dM/xY/vzN/NhGDP6N/ZJbW9zmQ7gaoLhMi60b8FyZrqWATToW3Hj4bngJceee6mOOKgBNmVDc5sdxQMlc2pIdpc9YBJHYJlJ0Wgb5KjqUnrPNIQbTpwkXrkas7qpwh40PbUcokGmqTsjY0Bt2S37GULXqgshZhYar1s8ZAxoIEhdt6FqXOuqXKa/5DiuUd3W+c1advmB/62k6gkB39QQF5a27ozYrRua+hqcRt6X5qEf4oDbSOK6YW8EioSgzvbKSzDd5SqF2Vu2oWL1AB2RyC+suG5DMH5QD+u1bSmQoUMQLjUSRxcnVOpTELUTpKUHHGsGV27coLvgE=
   distributions: bdist_wheel
   skip_cleanup: true
   skip_existing: true
