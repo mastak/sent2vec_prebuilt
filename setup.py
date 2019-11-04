@@ -66,7 +66,7 @@ ext = [
 setup(
     name='sent2vec_prebuilt',
     ext_modules=cythonize(ext, language_level=str(sys.version_info[0])),
-    version='0.0.2',
+    version='0.0.3',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/epfml/sent2vec',
